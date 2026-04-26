@@ -19,8 +19,15 @@
                 <div class="status-icon" style="background:rgba(245,158,11,.12);border:1px solid rgba(245,158,11,.25);">&#128274;</div>
                 <div>
                     <h4>{% trans "Identity verification" %}</h4>
-                    <p>{% trans "Not verified yet. Verify your identity to start connecting." %}</p>
-                    <a href="#" class="btn btn-sm btn-primary" style="margin-top:10px;">{% trans "Start verification" %}</a>
+                    {% if user.account_profile.is_identity_verified %}
+                    <span class="badge badge-verified">{% trans "Verified" %}</span>
+                    <p>{% trans "Your identity has been verified." %}</p>
+                    <a href="#" class="btn btn-sm btn-primary" style="margin-top:10px;">{% trans "Find matches" %}</a>
+                    {% else %}
+                    <span class="badge badge-not-verified">{% trans "Not verified" %}</span>
+                    <p>{% trans "Complete identity verification to unlock matchmaking." %}</p>
+                    <a href="{% url 'verification:start' %}" class="btn btn-sm btn-primary" style="margin-top:10px;">{% trans "Start identity verification" %}</a>
+                    {% endif %}
                 </div>
             </div>
             <div class="status-card">
@@ -48,7 +55,7 @@
                 <h3>{% trans "My Profile" %}</h3>
                 <p>{% trans "View and edit your profile" %}</p>
             </a>
-            <a href="#" class="action-card">
+            <a href="{% url 'verification:start' %}" class="action-card">
                 <div class="action-icon">&#128274;</div>
                 <h3>{% trans "Start Verification" %}</h3>
                 <p>{% trans "Verify your identity" %}</p>
