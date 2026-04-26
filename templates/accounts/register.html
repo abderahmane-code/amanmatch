@@ -5,33 +5,97 @@
 
 {% block content %}
 <div class="auth-wrapper">
-    <div class="auth-card">
+    <div class="auth-card" style="max-width:540px;">
         <h2>{% trans "Create your account" %}</h2>
         <p class="auth-subtitle">{% trans "Join a community built on trust and verified identities." %}</p>
 
         <form method="post" novalidate>
             {% csrf_token %}
 
-            {% for field in form %}
-            <div class="form-group">
-                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
-                <input
-                    type="{{ field.field.widget.input_type|default:'text' }}"
-                    name="{{ field.html_name }}"
-                    id="{{ field.id_for_label }}"
-                    class="form-control"
-                    placeholder="{{ field.label }}"
-                    value="{{ field.value|default_if_none:'' }}"
-                    {% if field.field.required %}required{% endif %}
-                >
-                {% if field.help_text %}
-                <span class="form-help">{{ field.help_text }}</span>
-                {% endif %}
-                {% for error in field.errors %}
-                <span class="form-error">{{ error }}</span>
+            {% if form.non_field_errors %}
+            <div class="alert alert-danger">
+                {% for error in form.non_field_errors %}
+                <p style="margin:0;">{{ error }}</p>
                 {% endfor %}
             </div>
-            {% endfor %}
+            {% endif %}
+
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+                <div class="form-group">
+                    <label for="{{ form.first_name.id_for_label }}">{{ form.first_name.label }}</label>
+                    <input type="text" name="{{ form.first_name.html_name }}" id="{{ form.first_name.id_for_label }}" class="form-control" placeholder="{% trans 'First name' %}" value="{{ form.first_name.value|default_if_none:'' }}" required>
+                    {% for error in form.first_name.errors %}<span class="form-error">{{ error }}</span>{% endfor %}
+                </div>
+                <div class="form-group">
+                    <label for="{{ form.last_name.id_for_label }}">{{ form.last_name.label }}</label>
+                    <input type="text" name="{{ form.last_name.html_name }}" id="{{ form.last_name.id_for_label }}" class="form-control" placeholder="{% trans 'Last name' %}" value="{{ form.last_name.value|default_if_none:'' }}" required>
+                    {% for error in form.last_name.errors %}<span class="form-error">{{ error }}</span>{% endfor %}
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.username.id_for_label }}">{{ form.username.label }}</label>
+                <input type="text" name="{{ form.username.html_name }}" id="{{ form.username.id_for_label }}" class="form-control" placeholder="{% trans 'Username' %}" value="{{ form.username.value|default_if_none:'' }}" required>
+                {% if form.username.help_text %}<span class="form-help">{{ form.username.help_text }}</span>{% endif %}
+                {% for error in form.username.errors %}<span class="form-error">{{ error }}</span>{% endfor %}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.email.id_for_label }}">{{ form.email.label }}</label>
+                <input type="email" name="{{ form.email.html_name }}" id="{{ form.email.id_for_label }}" class="form-control" placeholder="{% trans 'Email address' %}" value="{{ form.email.value|default_if_none:'' }}" required>
+                {% for error in form.email.errors %}<span class="form-error">{{ error }}</span>{% endfor %}
+            </div>
+
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+                <div class="form-group">
+                    <label for="{{ form.password1.id_for_label }}">{{ form.password1.label }}</label>
+                    <input type="password" name="{{ form.password1.html_name }}" id="{{ form.password1.id_for_label }}" class="form-control" placeholder="{% trans 'Password' %}" required>
+                    {% for error in form.password1.errors %}<span class="form-error">{{ error }}</span>{% endfor %}
+                </div>
+                <div class="form-group">
+                    <label for="{{ form.password2.id_for_label }}">{{ form.password2.label }}</label>
+                    <input type="password" name="{{ form.password2.html_name }}" id="{{ form.password2.id_for_label }}" class="form-control" placeholder="{% trans 'Confirm password' %}" required>
+                    {% for error in form.password2.errors %}<span class="form-error">{{ error }}</span>{% endfor %}
+                </div>
+            </div>
+
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+                <div class="form-group">
+                    <label for="{{ form.gender.id_for_label }}">{{ form.gender.label }}</label>
+                    <select name="{{ form.gender.html_name }}" id="{{ form.gender.id_for_label }}" class="form-control" required>
+                        <option value="">{% trans "Select gender" %}</option>
+                        {% for value, label in form.gender.field.choices %}
+                        <option value="{{ value }}" {% if form.gender.value == value %}selected{% endif %}>{{ label }}</option>
+                        {% endfor %}
+                    </select>
+                    {% for error in form.gender.errors %}<span class="form-error">{{ error }}</span>{% endfor %}
+                </div>
+                <div class="form-group">
+                    <label for="{{ form.date_of_birth.id_for_label }}">{{ form.date_of_birth.label }}</label>
+                    <input type="date" name="{{ form.date_of_birth.html_name }}" id="{{ form.date_of_birth.id_for_label }}" class="form-control" value="{{ form.date_of_birth.value|default_if_none:'' }}" required>
+                    {% for error in form.date_of_birth.errors %}<span class="form-error">{{ error }}</span>{% endfor %}
+                </div>
+            </div>
+
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+                <div class="form-group">
+                    <label for="{{ form.country.id_for_label }}">{{ form.country.label }}</label>
+                    <input type="text" name="{{ form.country.html_name }}" id="{{ form.country.id_for_label }}" class="form-control" placeholder="{% trans 'Country' %}" value="{{ form.country.value|default_if_none:'' }}" required>
+                    {% for error in form.country.errors %}<span class="form-error">{{ error }}</span>{% endfor %}
+                </div>
+                <div class="form-group">
+                    <label for="{{ form.city.id_for_label }}">{{ form.city.label }}</label>
+                    <input type="text" name="{{ form.city.html_name }}" id="{{ form.city.id_for_label }}" class="form-control" placeholder="{% trans 'City' %}" value="{{ form.city.value|default_if_none:'' }}" required>
+                    {% for error in form.city.errors %}<span class="form-error">{{ error }}</span>{% endfor %}
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.phone_number.id_for_label }}">{{ form.phone_number.label }}</label>
+                <input type="tel" name="{{ form.phone_number.html_name }}" id="{{ form.phone_number.id_for_label }}" class="form-control" placeholder="{% trans '+1 234 567 8900' %}" value="{{ form.phone_number.value|default_if_none:'' }}">
+                {% if form.phone_number.help_text %}<span class="form-help">{{ form.phone_number.help_text }}</span>{% endif %}
+                {% for error in form.phone_number.errors %}<span class="form-error">{{ error }}</span>{% endfor %}
+            </div>
 
             <button type="submit" class="btn btn-primary" style="width:100%;margin-top:8px;">{% trans "Create account" %}</button>
         </form>

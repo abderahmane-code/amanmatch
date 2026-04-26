@@ -10,6 +10,7 @@ urlpatterns = [
     path("", landing_view, name="landing"),
     path("dashboard/", dashboard_view, name="dashboard"),
     path("accounts/", include("accounts.urls")),
+    path("verification/", include("verification.urls")),
 ]
 
 if settings.DEBUG:

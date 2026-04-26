@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Identity Verification" %} — AmanMatch{% endblock %}
+
+{% block content %}
+<div class="auth-wrapper">
+    <div class="auth-card" style="max-width:480px;text-align:center;">
+        <div style="font-size:3rem;margin-bottom:16px;">&#128274;</div>
+        <h2>{% trans "Identity Verification" %}</h2>
+        <p class="auth-subtitle" style="margin-top:12px;">
+            {% trans "Identity verification will be implemented in the next step." %}
+        </p>
+        <a href="{% url 'dashboard' %}" class="btn btn-secondary" style="margin-top:24px;">{% trans "Back to Dashboard" %}</a>
+    </div>
+</div>
+{% endblock %}
+
+{% block footer %}{% endblock %}
