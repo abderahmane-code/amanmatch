@@ -5,40 +5,83 @@
 
 {% block content %}
 <div class="dashboard">
-    <h1>{% trans "Welcome back," %} {{ user.get_short_name|default:user.username }}!</h1>
-    <p class="subtitle">{% trans "Here's your AmanMatch overview." %}</p>
+    <div class="container">
 
-    <div class="dashboard-grid">
-        <div class="dash-card">
-            <div class="icon">👤</div>
-            <h3>{% trans "My Profile" %}</h3>
-            <p>{% trans "View and update your profile information." %}</p>
+        <!-- Welcome Hero -->
+        <div class="dash-welcome">
+            <h1>{% trans "Welcome back," %} <span class="text-gradient">{{ user.username }}</span></h1>
+            <p>{% trans "Your journey to a safe, meaningful connection starts here." %}</p>
         </div>
-        <div class="dash-card">
-            <div class="icon">✅</div>
-            <h3>{% trans "Verification" %}</h3>
-            <p>{% trans "Complete identity verification to unlock matching." %}</p>
+
+        <!-- Status Cards -->
+        <div class="dash-status-grid">
+            <div class="status-card">
+                <div class="status-icon" style="background:rgba(245,158,11,.12);border:1px solid rgba(245,158,11,.25);">&#128274;</div>
+                <div>
+                    <h4>{% trans "Identity verification" %}</h4>
+                    <p>{% trans "Not verified yet. Verify your identity to start connecting." %}</p>
+                    <a href="#" class="btn btn-sm btn-primary" style="margin-top:10px;">{% trans "Start verification" %}</a>
+                </div>
+            </div>
+            <div class="status-card">
+                <div class="status-icon" style="background:rgba(139,92,246,.12);border:1px solid rgba(139,92,246,.25);">&#128100;</div>
+                <div>
+                    <h4>{% trans "Profile completion" %}</h4>
+                    <p>{% trans "Complete your profile to appear in search results and attract serious matches." %}</p>
+                    <a href="#" class="btn btn-sm btn-secondary" style="margin-top:10px;">{% trans "Complete profile" %}</a>
+                </div>
+            </div>
+            <div class="status-card">
+                <div class="status-icon" style="background:rgba(16,185,129,.12);border:1px solid rgba(16,185,129,.25);">&#128737;</div>
+                <div>
+                    <h4>{% trans "Safety reminder" %}</h4>
+                    <p>{% trans "Never share personal information too early. Use our reporting tools if something feels wrong." %}</p>
+                </div>
+            </div>
         </div>
-        <div class="dash-card">
-            <div class="icon">💕</div>
-            <h3>{% trans "Matches" %}</h3>
-            <p>{% trans "Browse and manage your potential matches." %}</p>
+
+        <!-- Quick Actions -->
+        <h2 class="dash-section-title">{% trans "Quick actions" %}</h2>
+        <div class="action-grid">
+            <a href="#" class="action-card">
+                <div class="action-icon">&#128100;</div>
+                <h3>{% trans "My Profile" %}</h3>
+                <p>{% trans "View and edit your profile" %}</p>
+            </a>
+            <a href="#" class="action-card">
+                <div class="action-icon">&#128274;</div>
+                <h3>{% trans "Start Verification" %}</h3>
+                <p>{% trans "Verify your identity" %}</p>
+            </a>
+            <a href="#" class="action-card">
+                <div class="action-icon">&#10084;</div>
+                <h3>{% trans "Find Matches" %}</h3>
+                <p>{% trans "Browse compatible profiles" %}</p>
+            </a>
+            <a href="#" class="action-card">
+                <div class="action-icon">&#128172;</div>
+                <h3>{% trans "Messages" %}</h3>
+                <p>{% trans "Check your conversations" %}</p>
+            </a>
+            <a href="#" class="action-card">
+                <div class="action-icon">&#128680;</div>
+                <h3>{% trans "Reports" %}</h3>
+                <p>{% trans "View safety reports" %}</p>
+            </a>
+            <a href="#" class="action-card">
+                <div class="action-icon">&#9881;</div>
+                <h3>{% trans "Settings" %}</h3>
+                <p>{% trans "Account and privacy settings" %}</p>
+            </a>
         </div>
-        <div class="dash-card">
-            <div class="icon">💬</div>
-            <h3>{% trans "Messages" %}</h3>
-            <p>{% trans "Chat securely with your verified matches." %}</p>
+
+        <!-- Empty State -->
+        <div class="card card-flat" style="text-align:center;padding:48px 24px;margin-top:40px;">
+            <p style="font-size:2rem;margin-bottom:12px;">&#127793;</p>
+            <h3>{% trans "Your matchmaking journey begins" %}</h3>
+            <p style="margin-top:8px;max-width:420px;margin-left:auto;margin-right:auto;">{% trans "Complete your verification and profile to start discovering genuine, compatible people who share your values." %}</p>
         </div>
-        <div class="dash-card">
-            <div class="icon">🚩</div>
-            <h3>{% trans "Reports" %}</h3>
-            <p>{% trans "Report suspicious activity and help keep the community safe." %}</p>
-        </div>
-        <div class="dash-card">
-            <div class="icon">⚙️</div>
-            <h3>{% trans "Settings" %}</h3>
-            <p>{% trans "Manage your account preferences and privacy settings." %}</p>
-        </div>
+
     </div>
 </div>
 {% endblock %}

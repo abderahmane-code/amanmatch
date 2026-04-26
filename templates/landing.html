@@ -1,38 +1,125 @@
 {% extends "base.html" %}
 {% load i18n %}
 
-{% block title %}AmanMatch — {% trans "Find Your Serious Partner Safely" %}{% endblock %}
+{% block title %}AmanMatch — {% trans "Serious Matchmaking. Verified Identities. Real Trust." %}{% endblock %}
 
 {% block content %}
+<!-- ===== HERO ===== -->
 <section class="hero">
-    <h1>{% trans "Find Your" %} <span class="highlight">{% trans "Serious Partner" %}</span><br>{% trans "Safely & Securely" %}</h1>
-    <p>{% trans "AmanMatch is a trusted matchmaking platform built to protect your identity and connect you with genuine, verified individuals — no fakes, no games." %}</p>
-    <div class="hero-actions">
-        <a href="{% url 'accounts:register' %}" class="btn btn-primary">{% trans "Get Started" %}</a>
-        <a href="{% url 'accounts:login' %}" class="btn btn-outline">{% trans "Login" %}</a>
+    <div class="container">
+        <span class="badge badge-accent">{% trans "Trusted by people who value safety" %}</span>
+        <h1>{% trans "Serious matchmaking." %}<br><span class="text-gradient">{% trans "Verified identities." %}</span><br>{% trans "Real trust." %}</h1>
+        <p class="subtitle">{% trans "AmanMatch helps you find a serious life partner through verified identities, mutual interest, and privacy-first design. No games. No fakes. Just real connection." %}</p>
+        <div class="hero-actions">
+            <a href="{% url 'accounts:register' %}" class="btn btn-primary btn-lg">{% trans "Create verified account" %}</a>
+            <a href="#how-it-works" class="btn btn-secondary btn-lg">{% trans "Learn how verification works" %}</a>
+        </div>
+
+        <!-- Trust Bar -->
+        <div class="trust-bar">
+            <div class="trust-item">
+                <span class="trust-icon">&#10003;</span>
+                <span>{% trans "Verified profiles" %}</span>
+            </div>
+            <div class="trust-item">
+                <span class="trust-icon">&#128274;</span>
+                <span>{% trans "Privacy-first" %}</span>
+            </div>
+            <div class="trust-item">
+                <span class="trust-icon">&#10084;</span>
+                <span>{% trans "Mutual interest only" %}</span>
+            </div>
+            <div class="trust-item">
+                <span class="trust-icon">&#128172;</span>
+                <span>{% trans "Safe messaging" %}</span>
+            </div>
+        </div>
     </div>
 </section>
 
-<section class="features">
-    <div class="feature-card">
-        <div class="feature-icon">🛡️</div>
-        <h3>{% trans "Identity Verification" %}</h3>
-        <p>{% trans "Every user must verify their identity before contacting others. No more fake profiles." %}</p>
+<!-- ===== FEATURES ===== -->
+<section class="section" id="features">
+    <div class="container">
+        <div class="text-center">
+            <span class="badge badge-accent">{% trans "Why AmanMatch" %}</span>
+            <h2 style="margin-top:16px;">{% trans "Built for safety, designed for love" %}</h2>
+            <p class="subtitle" style="margin:12px auto 0;">{% trans "Every feature exists to protect you and help you connect with people who share your intentions." %}</p>
+        </div>
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">&#128737;</div>
+                <h3>{% trans "Identity verification" %}</h3>
+                <p>{% trans "Every user verifies their real identity before they can contact anyone. No anonymous profiles." %}</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">&#128065;</div>
+                <h3>{% trans "Private mode" %}</h3>
+                <p>{% trans "Control who can see your profile. Share details only when you feel comfortable." %}</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">&#10084;</div>
+                <h3>{% trans "Mutual interest" %}</h3>
+                <p>{% trans "Connections happen only when both people show interest. No unwanted messages." %}</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">&#128172;</div>
+                <h3>{% trans "Safe messaging" %}</h3>
+                <p>{% trans "Encrypted, monitored for abuse, and available only between mutually interested users." %}</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">&#128680;</div>
+                <h3>{% trans "Reporting and protection" %}</h3>
+                <p>{% trans "Report suspicious behavior instantly. Our safety team reviews every case." %}</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">&#127760;</div>
+                <h3>{% trans "Global and inclusive" %}</h3>
+                <p>{% trans "Available worldwide with multi-language support coming soon. Everyone deserves a safe match." %}</p>
+            </div>
+        </div>
     </div>
-    <div class="feature-card">
-        <div class="feature-icon">🔒</div>
-        <h3>{% trans "Privacy First" %}</h3>
-        <p>{% trans "Your personal data is encrypted and never shared without your consent." %}</p>
+</section>
+
+<!-- ===== HOW IT WORKS ===== -->
+<section class="section" id="how-it-works" style="background: var(--bg-surface);">
+    <div class="container">
+        <div class="text-center">
+            <span class="badge badge-accent">{% trans "Getting started" %}</span>
+            <h2 style="margin-top:16px;">{% trans "How AmanMatch works" %}</h2>
+            <p class="subtitle" style="margin:12px auto 0;">{% trans "Four simple steps to a genuine, safe connection." %}</p>
+        </div>
+        <div class="steps-grid">
+            <div class="step-card">
+                <h3>{% trans "Create your account" %}</h3>
+                <p>{% trans "Sign up with your email and create a secure password. It takes less than a minute." %}</p>
+            </div>
+            <div class="step-card">
+                <h3>{% trans "Verify your identity" %}</h3>
+                <p>{% trans "Submit your government-issued ID. We verify you're real while keeping your data encrypted." %}</p>
+            </div>
+            <div class="step-card">
+                <h3>{% trans "Build your serious profile" %}</h3>
+                <p>{% trans "Share who you are, what you value, and what you're looking for in a partner." %}</p>
+            </div>
+            <div class="step-card">
+                <h3>{% trans "Connect after mutual interest" %}</h3>
+                <p>{% trans "When two people express interest, messaging opens. Safe, private, and respectful." %}</p>
+            </div>
+        </div>
     </div>
-    <div class="feature-card">
-        <div class="feature-icon">💎</div>
-        <h3>{% trans "Serious Matches" %}</h3>
-        <p>{% trans "Our smart algorithm connects you with compatible, verified partners who share your values." %}</p>
-    </div>
-    <div class="feature-card">
-        <div class="feature-icon">🌍</div>
-        <h3>{% trans "Global Reach" %}</h3>
-        <p>{% trans "Connect with verified people from around the world in a safe environment." %}</p>
+</section>
+
+<!-- ===== SAFETY ===== -->
+<section class="section">
+    <div class="container">
+        <div class="safety-section">
+            <span class="badge badge-success" style="margin-bottom:16px;">{% trans "Your safety matters" %}</span>
+            <h2>{% trans "A platform built on trust" %}</h2>
+            <p style="margin-top:12px;">{% trans "AmanMatch was designed from the ground up to fight fake profiles, emotional manipulation, and privacy abuse. Our verification process, safety tools, and moderation team work together to give you a secure matchmaking experience." %}</p>
+            <div style="margin-top:28px;">
+                <a href="{% url 'accounts:register' %}" class="btn btn-primary">{% trans "Join AmanMatch today" %}</a>
+            </div>
+        </div>
     </div>
 </section>
 {% endblock %}
