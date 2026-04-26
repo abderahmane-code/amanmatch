@@ -67,6 +67,18 @@ img { max-width: 100%; height: auto; }
     transition: color .2s;
 }
 .navbar .nav-links a:hover { color: var(--text-primary); }
+.nav-logout-btn {
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    font-weight: 500;
+    font-size: .95rem;
+    font-family: inherit;
+    cursor: pointer;
+    padding: 0;
+    transition: color .2s;
+}
+.nav-logout-btn:hover { color: var(--text-primary); }
 
 /* --------------- Buttons --------------- */
 .btn {
