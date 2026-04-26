@@ -13,7 +13,15 @@
                 <h1>{% trans "Welcome back," %} <span class="text-gradient">{{ user.username }}</span></h1>
                 <p class="dash-hero-subtitle">{% trans "Build a trusted profile, verify your identity, and connect only when interest is mutual." %}</p>
                 <div class="dash-hero-actions">
+                    {% if verification_status == "pending" %}
+                    <a href="{% url 'verification:status' %}" class="btn btn-primary">{% trans "View verification status" %}</a>
+                    {% elif verification_status == "approved" %}
+                    <a href="#" class="btn btn-primary">{% trans "Find matches" %}</a>
+                    {% elif verification_status == "rejected" %}
+                    <a href="{% url 'verification:start' %}" class="btn btn-primary">{% trans "Resubmit verification" %}</a>
+                    {% else %}
                     <a href="{% url 'verification:start' %}" class="btn btn-primary">{% trans "Start verification" %}</a>
+                    {% endif %}
                     <a href="{% url 'profiles:edit' %}" class="btn btn-secondary">{% trans "Complete profile" %}</a>
                 </div>
             </div>
@@ -30,6 +38,10 @@
                         <h3>{% trans "Identity verification" %}</h3>
                         {% if user.account_profile.is_identity_verified %}
                         <span class="badge badge-verified">{% trans "Verified" %}</span>
+                        {% elif verification_status == "pending" %}
+                        <span class="badge badge-warning">{% trans "Pending review" %}</span>
+                        {% elif verification_status == "rejected" %}
+                        <span class="badge badge-danger">{% trans "Rejected" %}</span>
                         {% else %}
                         <span class="badge badge-not-verified">{% trans "Not verified" %}</span>
                         {% endif %}
@@ -38,6 +50,12 @@
                 {% if user.account_profile.is_identity_verified %}
                 <p>{% trans "Your identity has been verified. You can now access all matchmaking features." %}</p>
                 <a href="#" class="btn btn-sm btn-primary">{% trans "Find matches" %}</a>
+                {% elif verification_status == "pending" %}
+                <p>{% trans "Your verification is being reviewed by our team. This usually takes 24-48 hours." %}</p>
+                <a href="{% url 'verification:status' %}" class="btn btn-sm btn-secondary">{% trans "View verification status" %}</a>
+                {% elif verification_status == "rejected" %}
+                <p>{% trans "Your verification was not approved. Please review the feedback and resubmit." %}</p>
+                <a href="{% url 'verification:start' %}" class="btn btn-sm btn-primary">{% trans "Resubmit verification" %}</a>
                 {% else %}
                 <p>{% trans "Complete identity verification to unlock matchmaking. Verified users get 3x more interest." %}</p>
                 <a href="{% url 'verification:start' %}" class="btn btn-sm btn-primary">{% trans "Start identity verification" %}</a>

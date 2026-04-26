@@ -102,13 +102,10 @@ class VerificationStartTests(TestCase):
         self.assertEqual(response.status_code, 302)
         self.assertIn("/accounts/login/", response.url)
 
-    def test_shows_placeholder_text(self):
+    def test_shows_verification_form(self):
         user = User.objects.create_user(
             username="verifyuser", password="TestPass123!"
         )
         self.client.login(username="verifyuser", password="TestPass123!")
         response = self.client.get(self.url)
-        self.assertContains(
-            response,
-            "Identity verification will be implemented in the next step.",
-        )
+        self.assertContains(response, "Identity Verification")
