@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Sign Up" %} — AmanMatch{% endblock %}
+
+{% block content %}
+<div class="auth-wrapper">
+    <div class="card auth-card">
+        <h2>{% trans "Create Your Account" %}</h2>
+        <form method="post" novalidate>
+            {% csrf_token %}
+            {% for field in form %}
+            <div class="form-group">
+                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                <input
+                    type="{{ field.field.widget.input_type|default:'text' }}"
+                    name="{{ field.html_name }}"
+                    id="{{ field.id_for_label }}"
+                    class="form-control"
+                    {% if field.value %}value="{{ field.value }}"{% endif %}
+                    placeholder="{{ field.label }}"
+                >
+                {% if field.errors %}
+                    {% for error in field.errors %}
+                    <small class="alert-danger" style="display:block;margin-top:.3rem;font-size:.82rem;">{{ error }}</small>
+                    {% endfor %}
+                {% endif %}
+                {% if field.help_text %}
+                    <small style="color:var(--text-muted);font-size:.8rem;">{{ field.help_text }}</small>
+                {% endif %}
+            </div>
+            {% endfor %}
+            <button type="submit" class="btn btn-primary" style="width:100%;">{% trans "Sign Up" %}</button>
+            <p class="form-footer">{% trans "Already have an account?" %} <a href="{% url 'accounts:login' %}">{% trans "Login" %}</a></p>
+        </form>
+    </div>
+</div>
+{% endblock %}
