@@ -4,16 +4,76 @@
 {% block title %}{% trans "Identity Verification" %} — AmanMatch{% endblock %}
 
 {% block content %}
-<div class="auth-wrapper">
-    <div class="auth-card" style="max-width:480px;text-align:center;">
-        <div style="font-size:3rem;margin-bottom:16px;">&#128274;</div>
-        <h2>{% trans "Identity Verification" %}</h2>
-        <p class="auth-subtitle" style="margin-top:12px;">
-            {% trans "Identity verification will be implemented in the next step." %}
-        </p>
-        <a href="{% url 'dashboard' %}" class="btn btn-secondary" style="margin-top:24px;">{% trans "Back to Dashboard" %}</a>
+<div class="section">
+    <div class="container" style="max-width:600px;">
+
+        <div class="dash-welcome" style="margin-bottom:32px;text-align:center;">
+            <div style="font-size:3rem;margin-bottom:16px;">&#128274;</div>
+            <h1>{% trans "Identity Verification" %}</h1>
+            <p>{% trans "Submit your identity document and a selfie to verify your account. This unlocks serious matchmaking features." %}</p>
+        </div>
+
+        <form method="post" enctype="multipart/form-data" novalidate>
+            {% csrf_token %}
+
+            {% if form.non_field_errors %}
+            <div class="alert alert-danger">
+                {% for error in form.non_field_errors %}
+                <p style="margin:0;">{{ error }}</p>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            <!-- Document Upload -->
+            <div class="card card-flat" style="padding:28px;margin-bottom:20px;">
+                <h3 style="margin-bottom:16px;">{% trans "Step 1: Identity document" %}</h3>
+                <p style="font-size:.9rem;color:var(--text-secondary);margin-bottom:16px;">
+                    {% trans "Upload a clear photo of your government-issued ID (passport, national ID card, or driver's license)." %}
+                </p>
+                <div class="form-group">
+                    <label for="{{ form.document_image.id_for_label }}">{{ form.document_image.label }}</label>
+                    <input type="file" name="{{ form.document_image.html_name }}" id="{{ form.document_image.id_for_label }}" class="form-control" accept="image/*">
+                    {% if form.document_image.help_text %}<span class="form-help">{{ form.document_image.help_text }}</span>{% endif %}
+                    {% for error in form.document_image.errors %}<span class="form-error">{{ error }}</span>{% endfor %}
+                </div>
+            </div>
+
+            <!-- Selfie Upload -->
+            <div class="card card-flat" style="padding:28px;margin-bottom:20px;">
+                <h3 style="margin-bottom:16px;">{% trans "Step 2: Selfie" %}</h3>
+                <p style="font-size:.9rem;color:var(--text-secondary);margin-bottom:16px;">
+                    {% trans "Take a clear photo of your face. Make sure your face is well-lit and fully visible." %}
+                </p>
+                <div class="form-group">
+                    <label for="{{ form.selfie_image.id_for_label }}">{{ form.selfie_image.label }}</label>
+                    <input type="file" name="{{ form.selfie_image.html_name }}" id="{{ form.selfie_image.id_for_label }}" class="form-control" accept="image/*">
+                    {% if form.selfie_image.help_text %}<span class="form-help">{{ form.selfie_image.help_text }}</span>{% endif %}
+                    {% for error in form.selfie_image.errors %}<span class="form-error">{{ error }}</span>{% endfor %}
+                </div>
+            </div>
+
+            <!-- Confirmation -->
+            <div class="card card-flat" style="padding:28px;margin-bottom:20px;">
+                <div class="form-check">
+                    <input type="checkbox" name="{{ form.confirmation.html_name }}" id="{{ form.confirmation.id_for_label }}" class="form-check-input">
+                    <label for="{{ form.confirmation.id_for_label }}" class="form-check-label">{{ form.confirmation.label }}</label>
+                </div>
+                {% for error in form.confirmation.errors %}<span class="form-error" style="display:block;margin-top:8px;">{{ error }}</span>{% endfor %}
+            </div>
+
+            <!-- Safety Notice -->
+            <div style="text-align:center;margin-bottom:24px;">
+                <p class="trust-micro" style="font-size:.85rem;">
+                    &#128274; {% trans "Your identity documents are used only for verification and are never displayed publicly." %}
+                </p>
+            </div>
+
+            <div style="display:flex;gap:12px;justify-content:center;">
+                <button type="submit" class="btn btn-primary">{% trans "Submit verification" %}</button>
+                <a href="{% url 'dashboard' %}" class="btn btn-secondary">{% trans "Back to Dashboard" %}</a>
+            </div>
+        </form>
+
     </div>
 </div>
 {% endblock %}
-
-{% block footer %}{% endblock %}

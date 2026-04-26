@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Verification Status" %} — AmanMatch{% endblock %}
+
+{% block content %}
+<div class="section">
+    <div class="container" style="max-width:600px;">
+
+        <div class="dash-welcome" style="margin-bottom:32px;text-align:center;">
+            <div style="font-size:3rem;margin-bottom:16px;">&#128274;</div>
+            <h1>{% trans "Verification Status" %}</h1>
+        </div>
+
+        {% if verification %}
+        <div class="card card-flat" style="padding:32px;">
+            <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:24px;">
+                <h3>{% trans "Latest verification request" %}</h3>
+                {% if verification.status == "pending" %}
+                <span class="badge badge-warning">{% trans "Pending review" %}</span>
+                {% elif verification.status == "approved" %}
+                <span class="badge badge-verified">{% trans "Approved" %}</span>
+                {% elif verification.status == "rejected" %}
+                <span class="badge badge-danger">{% trans "Rejected" %}</span>
+                {% endif %}
+            </div>
+
+            <div class="profile-field">
+                <span class="profile-field-label">{% trans "Submitted" %}</span>
+                <span>{{ verification.submitted_at|date:"N j, Y, P" }}</span>
+            </div>
+
+            {% if verification.auto_result != "not_checked" %}
+            <div class="profile-field">
+                <span class="profile-field-label">{% trans "Auto result" %}</span>
+                <span>{{ verification.get_auto_result_display }}</span>
+            </div>
+            {% endif %}
+
+            {% if verification.match_score is not None %}
+            <div class="profile-field">
+                <span class="profile-field-label">{% trans "Match score" %}</span>
+                <span>{{ verification.match_score|floatformat:2 }}</span>
+            </div>
+            {% endif %}
+
+            {% if verification.status == "rejected" and verification.rejection_reason %}
+            <div class="profile-field" style="border-bottom:none;">
+                <span class="profile-field-label">{% trans "Reason" %}</span>
+                <span style="color:var(--danger);">{{ verification.rejection_reason }}</span>
+            </div>
+            {% endif %}
+
+            <!-- Guidance -->
+            <div style="margin-top:24px;padding:20px;background:var(--gradient-subtle);border-radius:var(--radius);border:1px solid var(--border);">
+                {% if verification.status == "pending" %}
+                <p style="margin:0;font-size:.92rem;color:var(--text-secondary);">
+                    &#9203; {% trans "Your verification is being reviewed by our team. This usually takes 24-48 hours. We will update your account once the review is complete." %}
+                </p>
+                {% elif verification.status == "approved" %}
+                <p style="margin:0;font-size:.92rem;color:var(--success);">
+                    &#10003; {% trans "Your identity has been verified. You now have full access to matchmaking features." %}
+                </p>
+                {% elif verification.status == "rejected" %}
+                <p style="margin:0;font-size:.92rem;color:var(--danger);">
+                    {% trans "Please review the rejection reason above and submit a new verification request with clearer documents." %}
+                </p>
+                {% endif %}
+            </div>
+        </div>
+
+        <div style="display:flex;gap:12px;justify-content:center;margin-top:24px;">
+            {% if verification.status == "rejected" %}
+            <a href="{% url 'verification:start' %}" class="btn btn-primary">{% trans "Resubmit verification" %}</a>
+            {% endif %}
+            <a href="{% url 'dashboard' %}" class="btn btn-secondary">{% trans "Back to Dashboard" %}</a>
+        </div>
+
+        {% else %}
+        <!-- No verification submitted yet -->
+        <div class="card card-flat" style="padding:48px;text-align:center;">
+            <p style="font-size:1.1rem;margin-bottom:16px;">{% trans "You have not submitted a verification request yet." %}</p>
+            <a href="{% url 'verification:start' %}" class="btn btn-primary">{% trans "Start identity verification" %}</a>
+        </div>
+        {% endif %}
+
+        <div style="text-align:center;margin-top:24px;">
+            <p class="trust-micro" style="font-size:.85rem;">
+                &#128274; {% trans "Your identity documents are used only for verification and are never displayed publicly." %}
+            </p>
+        </div>
+
+    </div>
+</div>
+{% endblock %}
