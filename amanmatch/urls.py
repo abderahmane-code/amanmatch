@@ -11,6 +11,7 @@ urlpatterns = [
     path("dashboard/", dashboard_view, name="dashboard"),
     path("accounts/", include("accounts.urls")),
     path("verification/", include("verification.urls")),
+    path("profiles/", include("profiles.urls")),
 ]
 
 if settings.DEBUG:
