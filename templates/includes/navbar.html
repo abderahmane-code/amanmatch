@@ -13,7 +13,7 @@
         <div class="nav-links">
             {% if user.is_authenticated %}
                 <a href="{% url 'dashboard' %}" class="{% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">{% trans "Dashboard" %}</a>
-                <a href="#" class="{% if request.resolver_match.url_name == 'profile' %}active{% endif %}">{% trans "Profile" %}</a>
+                <a href="{% url 'profiles:detail' %}" class="{% if request.resolver_match.url_name == 'detail' or request.resolver_match.url_name == 'edit' %}active{% endif %}">{% trans "Profile" %}</a>
                 <a href="#" class="{% if request.resolver_match.url_name == 'verification' %}active{% endif %}">{% trans "Verification" %}</a>
                 <a href="#" class="{% if request.resolver_match.url_name == 'matches' %}active{% endif %}">{% trans "Matches" %}</a>
                 <a href="#" class="{% if request.resolver_match.url_name == 'messages' %}active{% endif %}">{% trans "Messages" %}</a>

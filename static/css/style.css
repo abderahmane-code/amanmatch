@@ -540,6 +540,56 @@ select.form-control { appearance: none; -webkit-appearance: none;
 .messages-container { max-width: 700px; margin: 16px auto; padding: 0 24px; }
 .messages-container ul { list-style: none; }
 
+/* ---------- Progress Bar ---------- */
+.progress-bar-wrapper {
+    display: flex; align-items: center; gap: 12px;
+}
+.progress-bar {
+    flex: 1; height: 8px;
+    background: var(--bg-card);
+    border-radius: 100px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+}
+.progress-bar-fill {
+    height: 100%;
+    background: var(--gradient);
+    border-radius: 100px;
+    transition: width .5s ease;
+}
+.progress-label {
+    font-size: .85rem; font-weight: 600;
+    color: var(--text); min-width: 36px;
+}
+
+/* ---------- Profile Fields ---------- */
+.profile-field {
+    display: flex; justify-content: space-between; align-items: flex-start;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--border);
+    gap: 16px;
+}
+.profile-field:last-child { border-bottom: none; }
+.profile-field-label {
+    font-size: .85rem; font-weight: 600;
+    color: var(--text-secondary); min-width: 140px; flex-shrink: 0;
+}
+
+/* ---------- Form Checkbox ---------- */
+.form-check {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 0;
+}
+.form-check-input {
+    width: 18px; height: 18px;
+    accent-color: var(--accent);
+    cursor: pointer;
+}
+.form-check-label {
+    font-size: .9rem; color: var(--text);
+    cursor: pointer;
+}
+
 /* ============================================================
    RESPONSIVE
    ============================================================ */

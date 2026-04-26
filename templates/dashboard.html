@@ -34,8 +34,18 @@
                 <div class="status-icon" style="background:rgba(139,92,246,.12);border:1px solid rgba(139,92,246,.25);">&#128100;</div>
                 <div>
                     <h4>{% trans "Profile completion" %}</h4>
+                    <div class="progress-bar-wrapper">
+                        <div class="progress-bar">
+                            <div class="progress-bar-fill" style="width:{{ profile_completion }}%;"></div>
+                        </div>
+                        <span class="progress-label">{{ profile_completion }}%</span>
+                    </div>
                     <p>{% trans "Complete your profile to appear in search results and attract serious matches." %}</p>
-                    <a href="#" class="btn btn-sm btn-secondary" style="margin-top:10px;">{% trans "Complete profile" %}</a>
+                    {% if profile_completion < 100 %}
+                    <a href="{% url 'profiles:edit' %}" class="btn btn-sm btn-secondary" style="margin-top:10px;">{% trans "Complete profile" %}</a>
+                    {% else %}
+                    <a href="{% url 'profiles:edit' %}" class="btn btn-sm btn-secondary" style="margin-top:10px;">{% trans "Edit profile" %}</a>
+                    {% endif %}
                 </div>
             </div>
             <div class="status-card">
@@ -50,7 +60,7 @@
         <!-- Quick Actions -->
         <h2 class="dash-section-title">{% trans "Quick actions" %}</h2>
         <div class="action-grid">
-            <a href="#" class="action-card">
+            <a href="{% url 'profiles:detail' %}" class="action-card">
                 <div class="action-icon">&#128100;</div>
                 <h3>{% trans "My Profile" %}</h3>
                 <p>{% trans "View and edit your profile" %}</p>

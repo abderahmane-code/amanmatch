@@ -5,6 +5,7 @@ from django.utils.translation import gettext_lazy as _
 
 from accounts.forms import AmanMatchRegistrationForm
 from accounts.models import AccountProfile
+from profiles.models import MatchmakingProfile
 
 
 def register_view(request):
@@ -26,6 +27,7 @@ def register_view(request):
                 city=form.cleaned_data["city"],
                 phone_number=form.cleaned_data.get("phone_number", ""),
             )
+            MatchmakingProfile.objects.create(user=user)
             login(request, user)
             messages.success(request, _("Welcome to AmanMatch! Your account has been created."))
             return redirect("dashboard")
