@@ -5,98 +5,182 @@
 
 {% block content %}
 <div class="dashboard">
-    <div class="container">
+    <div class="container container-wide">
 
         <!-- Welcome Hero -->
-        <div class="dash-welcome">
-            <h1>{% trans "Welcome back," %} <span class="text-gradient">{{ user.username }}</span></h1>
-            <p>{% trans "Your journey to a safe, meaningful connection starts here." %}</p>
+        <div class="dash-hero">
+            <div class="dash-hero-content">
+                <h1>{% trans "Welcome back," %} <span class="text-gradient">{{ user.username }}</span></h1>
+                <p class="dash-hero-subtitle">{% trans "Build a trusted profile, verify your identity, and connect only when interest is mutual." %}</p>
+                <div class="dash-hero-actions">
+                    <a href="{% url 'verification:start' %}" class="btn btn-primary">{% trans "Start verification" %}</a>
+                    <a href="{% url 'profiles:edit' %}" class="btn btn-secondary">{% trans "Complete profile" %}</a>
+                </div>
+            </div>
         </div>
 
-        <!-- Status Cards -->
+        <!-- Status Section -->
+        <h2 class="dash-section-title">{% trans "Your account status" %}</h2>
         <div class="dash-status-grid">
-            <div class="status-card">
-                <div class="status-icon" style="background:rgba(245,158,11,.12);border:1px solid rgba(245,158,11,.25);">&#128274;</div>
-                <div>
-                    <h4>{% trans "Identity verification" %}</h4>
-                    {% if user.account_profile.is_identity_verified %}
-                    <span class="badge badge-verified">{% trans "Verified" %}</span>
-                    <p>{% trans "Your identity has been verified." %}</p>
-                    <a href="#" class="btn btn-sm btn-primary" style="margin-top:10px;">{% trans "Find matches" %}</a>
-                    {% else %}
-                    <span class="badge badge-not-verified">{% trans "Not verified" %}</span>
-                    <p>{% trans "Complete identity verification to unlock matchmaking." %}</p>
-                    <a href="{% url 'verification:start' %}" class="btn btn-sm btn-primary" style="margin-top:10px;">{% trans "Start identity verification" %}</a>
-                    {% endif %}
-                </div>
-            </div>
-            <div class="status-card">
-                <div class="status-icon" style="background:rgba(139,92,246,.12);border:1px solid rgba(139,92,246,.25);">&#128100;</div>
-                <div>
-                    <h4>{% trans "Profile completion" %}</h4>
-                    <div class="progress-bar-wrapper">
-                        <div class="progress-bar">
-                            <div class="progress-bar-fill" style="width:{{ profile_completion }}%;"></div>
-                        </div>
-                        <span class="progress-label">{{ profile_completion }}%</span>
+            <!-- Identity Verification -->
+            <div class="status-card status-card-lg">
+                <div class="status-card-header">
+                    <div class="status-icon-lg" style="background:rgba(245,158,11,.12);border-color:rgba(245,158,11,.25);">&#128274;</div>
+                    <div>
+                        <h3>{% trans "Identity verification" %}</h3>
+                        {% if user.account_profile.is_identity_verified %}
+                        <span class="badge badge-verified">{% trans "Verified" %}</span>
+                        {% else %}
+                        <span class="badge badge-not-verified">{% trans "Not verified" %}</span>
+                        {% endif %}
                     </div>
-                    <p>{% trans "Complete your profile to appear in search results and attract serious matches." %}</p>
-                    {% if profile_completion < 100 %}
-                    <a href="{% url 'profiles:edit' %}" class="btn btn-sm btn-secondary" style="margin-top:10px;">{% trans "Complete profile" %}</a>
-                    {% else %}
-                    <a href="{% url 'profiles:edit' %}" class="btn btn-sm btn-secondary" style="margin-top:10px;">{% trans "Edit profile" %}</a>
-                    {% endif %}
                 </div>
+                {% if user.account_profile.is_identity_verified %}
+                <p>{% trans "Your identity has been verified. You can now access all matchmaking features." %}</p>
+                <a href="#" class="btn btn-sm btn-primary">{% trans "Find matches" %}</a>
+                {% else %}
+                <p>{% trans "Complete identity verification to unlock matchmaking. Verified users get 3x more interest." %}</p>
+                <a href="{% url 'verification:start' %}" class="btn btn-sm btn-primary">{% trans "Start identity verification" %}</a>
+                {% endif %}
+                <span class="trust-micro">{% trans "AmanMatch never displays your identity documents publicly." %}</span>
             </div>
-            <div class="status-card">
-                <div class="status-icon" style="background:rgba(16,185,129,.12);border:1px solid rgba(16,185,129,.25);">&#128737;</div>
-                <div>
-                    <h4>{% trans "Safety reminder" %}</h4>
-                    <p>{% trans "Never share personal information too early. Use our reporting tools if something feels wrong." %}</p>
+
+            <!-- Profile Completion -->
+            <div class="status-card status-card-lg">
+                <div class="status-card-header">
+                    <div class="status-icon-lg" style="background:rgba(139,92,246,.12);border-color:rgba(139,92,246,.25);">&#128100;</div>
+                    <div>
+                        <h3>{% trans "Profile completion" %}</h3>
+                        <span class="badge {% if profile_completion == 100 %}badge-verified{% else %}badge-accent{% endif %}">{{ profile_completion }}%</span>
+                    </div>
                 </div>
+                <div class="progress-bar-wrapper progress-bar-lg">
+                    <div class="progress-bar">
+                        <div class="progress-bar-fill" style="width:{{ profile_completion }}%;"></div>
+                    </div>
+                </div>
+                <p>{% trans "Complete your profile to improve your match quality." %}</p>
+                {% if profile_completion < 100 %}
+                <a href="{% url 'profiles:edit' %}" class="btn btn-sm btn-secondary">{% trans "Complete profile" %}</a>
+                {% else %}
+                <a href="{% url 'profiles:edit' %}" class="btn btn-sm btn-secondary">{% trans "Edit profile" %}</a>
+                {% endif %}
+                <span class="trust-micro">{% trans "Only verified users can unlock serious matchmaking features." %}</span>
+            </div>
+
+            <!-- Safety Reminder -->
+            <div class="status-card status-card-lg">
+                <div class="status-card-header">
+                    <div class="status-icon-lg" style="background:rgba(16,185,129,.12);border-color:rgba(16,185,129,.25);">&#128737;</div>
+                    <div>
+                        <h3>{% trans "Safety reminder" %}</h3>
+                        <span class="badge badge-success">{% trans "Protected" %}</span>
+                    </div>
+                </div>
+                <p>{% trans "Never share personal information too early. Use our reporting tools if something feels wrong. All conversations are monitored for safety." %}</p>
+                <a href="#" class="btn btn-sm btn-secondary">{% trans "Review safety guidelines" %}</a>
+                <span class="trust-micro">{% trans "Mutual interest protects both sides before messaging." %}</span>
             </div>
         </div>
 
         <!-- Quick Actions -->
         <h2 class="dash-section-title">{% trans "Quick actions" %}</h2>
-        <div class="action-grid">
-            <a href="{% url 'profiles:detail' %}" class="action-card">
-                <div class="action-icon">&#128100;</div>
-                <h3>{% trans "My Profile" %}</h3>
-                <p>{% trans "View and edit your profile" %}</p>
+        <div class="action-grid action-grid-lg">
+            <a href="{% url 'profiles:detail' %}" class="action-card action-card-lg">
+                <div class="action-icon-lg">&#128100;</div>
+                <div>
+                    <h3>{% trans "My Profile" %}</h3>
+                    <p>{% trans "View your matchmaking profile and see how it appears to others" %}</p>
+                </div>
             </a>
-            <a href="{% url 'verification:start' %}" class="action-card">
-                <div class="action-icon">&#128274;</div>
-                <h3>{% trans "Start Verification" %}</h3>
-                <p>{% trans "Verify your identity" %}</p>
+            <a href="{% url 'verification:start' %}" class="action-card action-card-lg">
+                <div class="action-icon-lg">&#128274;</div>
+                <div>
+                    <h3>{% trans "Start Verification" %}</h3>
+                    <p>{% trans "Verify your identity to build trust and unlock features" %}</p>
+                </div>
             </a>
-            <a href="#" class="action-card">
-                <div class="action-icon">&#10084;</div>
-                <h3>{% trans "Find Matches" %}</h3>
-                <p>{% trans "Browse compatible profiles" %}</p>
+            <a href="#" class="action-card action-card-lg">
+                <div class="action-icon-lg">&#10084;</div>
+                <div>
+                    <h3>{% trans "Find Matches" %}</h3>
+                    <p>{% trans "Browse verified profiles that match your preferences" %}</p>
+                </div>
             </a>
-            <a href="#" class="action-card">
-                <div class="action-icon">&#128172;</div>
-                <h3>{% trans "Messages" %}</h3>
-                <p>{% trans "Check your conversations" %}</p>
+            <a href="#" class="action-card action-card-lg">
+                <div class="action-icon-lg">&#128172;</div>
+                <div>
+                    <h3>{% trans "Messages" %}</h3>
+                    <p>{% trans "Safe conversations with mutual-interest matches only" %}</p>
+                </div>
             </a>
-            <a href="#" class="action-card">
-                <div class="action-icon">&#128680;</div>
-                <h3>{% trans "Reports" %}</h3>
-                <p>{% trans "View safety reports" %}</p>
+            <a href="#" class="action-card action-card-lg">
+                <div class="action-icon-lg">&#128680;</div>
+                <div>
+                    <h3>{% trans "Reports" %}</h3>
+                    <p>{% trans "Report concerns and review your safety activity log" %}</p>
+                </div>
             </a>
-            <a href="#" class="action-card">
-                <div class="action-icon">&#9881;</div>
-                <h3>{% trans "Settings" %}</h3>
-                <p>{% trans "Account and privacy settings" %}</p>
+            <a href="#" class="action-card action-card-lg">
+                <div class="action-icon-lg">&#9881;</div>
+                <div>
+                    <h3>{% trans "Settings" %}</h3>
+                    <p>{% trans "Manage your account, privacy preferences, and notifications" %}</p>
+                </div>
             </a>
         </div>
 
-        <!-- Empty State -->
-        <div class="card card-flat" style="text-align:center;padding:48px 24px;margin-top:40px;">
-            <p style="font-size:2rem;margin-bottom:12px;">&#127793;</p>
-            <h3>{% trans "Your matchmaking journey begins" %}</h3>
-            <p style="margin-top:8px;max-width:420px;margin-left:auto;margin-right:auto;">{% trans "Complete your verification and profile to start discovering genuine, compatible people who share your values." %}</p>
+        <!-- Next Steps -->
+        <h2 class="dash-section-title">{% trans "Next steps" %}</h2>
+        <div class="next-steps-grid">
+            <div class="next-step-card">
+                <span class="next-step-number">1</span>
+                <div>
+                    <h4>{% trans "Verify your identity" %}</h4>
+                    <p>{% trans "Upload a valid ID to prove you are real. This builds trust and unlocks matchmaking." %}</p>
+                    <a href="{% url 'verification:start' %}" class="btn btn-sm btn-primary">{% trans "Start now" %}</a>
+                </div>
+            </div>
+            <div class="next-step-card">
+                <span class="next-step-number">2</span>
+                <div>
+                    <h4>{% trans "Complete your matchmaking profile" %}</h4>
+                    <p>{% trans "Share your values, intentions, and preferences to attract serious, compatible matches." %}</p>
+                    <a href="{% url 'profiles:edit' %}" class="btn btn-sm btn-secondary">{% trans "Edit profile" %}</a>
+                </div>
+            </div>
+            <div class="next-step-card">
+                <span class="next-step-number">3</span>
+                <div>
+                    <h4>{% trans "Review safety guidelines" %}</h4>
+                    <p>{% trans "Learn how AmanMatch protects your privacy and keeps conversations safe." %}</p>
+                    <a href="#" class="btn btn-sm btn-secondary">{% trans "Read guidelines" %}</a>
+                </div>
+            </div>
+            <div class="next-step-card">
+                <span class="next-step-number">4</span>
+                <div>
+                    <h4>{% trans "Start exploring verified profiles" %}</h4>
+                    <p>{% trans "Once verified, browse profiles of people who share your values and intentions." %}</p>
+                    <a href="#" class="btn btn-sm btn-secondary">{% trans "Explore" %}</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Trust Footer -->
+        <div class="dash-trust-footer">
+            <div class="trust-micro-card">
+                <span>&#128274;</span>
+                <p>{% trans "AmanMatch never displays your identity documents publicly." %}</p>
+            </div>
+            <div class="trust-micro-card">
+                <span>&#10003;</span>
+                <p>{% trans "Only verified users can unlock serious matchmaking features." %}</p>
+            </div>
+            <div class="trust-micro-card">
+                <span>&#10084;</span>
+                <p>{% trans "Mutual interest protects both sides before messaging." %}</p>
+            </div>
         </div>
 
     </div>
