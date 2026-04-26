@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}AmanMatch — {% trans "Find Your Serious Partner Safely" %}{% endblock %}
+
+{% block content %}
+<section class="hero">
+    <h1>{% trans "Find Your" %} <span class="highlight">{% trans "Serious Partner" %}</span><br>{% trans "Safely & Securely" %}</h1>
+    <p>{% trans "AmanMatch is a trusted matchmaking platform built to protect your identity and connect you with genuine, verified individuals — no fakes, no games." %}</p>
+    <div class="hero-actions">
+        <a href="{% url 'accounts:register' %}" class="btn btn-primary">{% trans "Get Started" %}</a>
+        <a href="{% url 'accounts:login' %}" class="btn btn-outline">{% trans "Login" %}</a>
+    </div>
+</section>
+
+<section class="features">
+    <div class="feature-card">
+        <div class="feature-icon">🛡️</div>
+        <h3>{% trans "Identity Verification" %}</h3>
+        <p>{% trans "Every user must verify their identity before contacting others. No more fake profiles." %}</p>
+    </div>
+    <div class="feature-card">
+        <div class="feature-icon">🔒</div>
+        <h3>{% trans "Privacy First" %}</h3>
+        <p>{% trans "Your personal data is encrypted and never shared without your consent." %}</p>
+    </div>
+    <div class="feature-card">
+        <div class="feature-icon">💎</div>
+        <h3>{% trans "Serious Matches" %}</h3>
+        <p>{% trans "Our smart algorithm connects you with compatible, verified partners who share your values." %}</p>
+    </div>
+    <div class="feature-card">
+        <div class="feature-icon">🌍</div>
+        <h3>{% trans "Global Reach" %}</h3>
+        <p>{% trans "Connect with verified people from around the world in a safe environment." %}</p>
+    </div>
+</section>
+{% endblock %}

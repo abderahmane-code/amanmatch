@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Dashboard" %} — AmanMatch{% endblock %}
+
+{% block content %}
+<div class="dashboard">
+    <h1>{% trans "Welcome back," %} {{ user.get_short_name|default:user.username }}!</h1>
+    <p class="subtitle">{% trans "Here's your AmanMatch overview." %}</p>
+
+    <div class="dashboard-grid">
+        <div class="dash-card">
+            <div class="icon">👤</div>
+            <h3>{% trans "My Profile" %}</h3>
+            <p>{% trans "View and update your profile information." %}</p>
+        </div>
+        <div class="dash-card">
+            <div class="icon">✅</div>
+            <h3>{% trans "Verification" %}</h3>
+            <p>{% trans "Complete identity verification to unlock matching." %}</p>
+        </div>
+        <div class="dash-card">
+            <div class="icon">💕</div>
+            <h3>{% trans "Matches" %}</h3>
+            <p>{% trans "Browse and manage your potential matches." %}</p>
+        </div>
+        <div class="dash-card">
+            <div class="icon">💬</div>
+            <h3>{% trans "Messages" %}</h3>
+            <p>{% trans "Chat securely with your verified matches." %}</p>
+        </div>
+        <div class="dash-card">
+            <div class="icon">🚩</div>
+            <h3>{% trans "Reports" %}</h3>
+            <p>{% trans "Report suspicious activity and help keep the community safe." %}</p>
+        </div>
+        <div class="dash-card">
+            <div class="icon">⚙️</div>
+            <h3>{% trans "Settings" %}</h3>
+            <p>{% trans "Manage your account preferences and privacy settings." %}</p>
+        </div>
+    </div>
+</div>
+{% endblock %}
