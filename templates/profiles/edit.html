@@ -1,0 +1,146 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Edit Profile" %} — AmanMatch{% endblock %}
+
+{% block content %}
+<div class="section">
+    <div class="container" style="max-width:640px;">
+
+        <div class="dash-welcome" style="margin-bottom:32px;">
+            <h1>{% trans "Edit your profile" %}</h1>
+            <p>{% trans "Tell potential matches about yourself. Only fields you fill in will be displayed." %}</p>
+        </div>
+
+        <form method="post" novalidate>
+            {% csrf_token %}
+
+            {% if form.non_field_errors %}
+            <div class="alert alert-danger">
+                {% for error in form.non_field_errors %}
+                <p style="margin:0;">{{ error }}</p>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            <!-- About You -->
+            <div class="card card-flat" style="padding:28px;margin-bottom:20px;">
+                <h3 style="margin-bottom:20px;">{% trans "About you" %}</h3>
+
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+                    <div class="form-group">
+                        <label for="{{ form.marital_status.id_for_label }}">{{ form.marital_status.label }}</label>
+                        <select name="{{ form.marital_status.html_name }}" id="{{ form.marital_status.id_for_label }}" class="form-control">
+                            <option value="">{% trans "Select" %}</option>
+                            {% for value, label in form.marital_status.field.choices %}
+                            <option value="{{ value }}" {% if form.marital_status.value == value %}selected{% endif %}>{{ label }}</option>
+                            {% endfor %}
+                        </select>
+                        {% for error in form.marital_status.errors %}<span class="form-error">{{ error }}</span>{% endfor %}
+                    </div>
+                    <div class="form-group">
+                        <label for="{{ form.serious_intention.id_for_label }}">{{ form.serious_intention.label }}</label>
+                        <select name="{{ form.serious_intention.html_name }}" id="{{ form.serious_intention.id_for_label }}" class="form-control">
+                            <option value="">{% trans "Select" %}</option>
+                            {% for value, label in form.serious_intention.field.choices %}
+                            <option value="{{ value }}" {% if form.serious_intention.value == value %}selected{% endif %}>{{ label }}</option>
+                            {% endfor %}
+                        </select>
+                        {% for error in form.serious_intention.errors %}<span class="form-error">{{ error }}</span>{% endfor %}
+                    </div>
+                </div>
+
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+                    <div class="form-group">
+                        <label for="{{ form.education_level.id_for_label }}">{{ form.education_level.label }}</label>
+                        <input type="text" name="{{ form.education_level.html_name }}" id="{{ form.education_level.id_for_label }}" class="form-control" placeholder="{% trans 'e.g. Bachelor, Master' %}" value="{{ form.education_level.value|default_if_none:'' }}">
+                        {% for error in form.education_level.errors %}<span class="form-error">{{ error }}</span>{% endfor %}
+                    </div>
+                    <div class="form-group">
+                        <label for="{{ form.profession.id_for_label }}">{{ form.profession.label }}</label>
+                        <input type="text" name="{{ form.profession.html_name }}" id="{{ form.profession.id_for_label }}" class="form-control" placeholder="{% trans 'e.g. Engineer, Teacher' %}" value="{{ form.profession.value|default_if_none:'' }}">
+                        {% for error in form.profession.errors %}<span class="form-error">{{ error }}</span>{% endfor %}
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="{{ form.short_bio.id_for_label }}">{{ form.short_bio.label }}</label>
+                    <textarea name="{{ form.short_bio.html_name }}" id="{{ form.short_bio.id_for_label }}" class="form-control" rows="4" placeholder="{% trans 'Write a short description about yourself...' %}">{{ form.short_bio.value|default_if_none:'' }}</textarea>
+                    {% for error in form.short_bio.errors %}<span class="form-error">{{ error }}</span>{% endfor %}
+                </div>
+            </div>
+
+            <!-- Partner Preferences -->
+            <div class="card card-flat" style="padding:28px;margin-bottom:20px;">
+                <h3 style="margin-bottom:20px;">{% trans "Partner preferences" %}</h3>
+
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+                    <div class="form-group">
+                        <label for="{{ form.preferred_age_min.id_for_label }}">{{ form.preferred_age_min.label }}</label>
+                        <input type="number" name="{{ form.preferred_age_min.html_name }}" id="{{ form.preferred_age_min.id_for_label }}" class="form-control" min="18" max="99" placeholder="18" value="{{ form.preferred_age_min.value|default_if_none:'' }}">
+                        {% for error in form.preferred_age_min.errors %}<span class="form-error">{{ error }}</span>{% endfor %}
+                    </div>
+                    <div class="form-group">
+                        <label for="{{ form.preferred_age_max.id_for_label }}">{{ form.preferred_age_max.label }}</label>
+                        <input type="number" name="{{ form.preferred_age_max.html_name }}" id="{{ form.preferred_age_max.id_for_label }}" class="form-control" min="18" max="99" placeholder="45" value="{{ form.preferred_age_max.value|default_if_none:'' }}">
+                        {% for error in form.preferred_age_max.errors %}<span class="form-error">{{ error }}</span>{% endfor %}
+                    </div>
+                </div>
+
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+                    <div class="form-group">
+                        <label for="{{ form.preferred_country.id_for_label }}">{{ form.preferred_country.label }}</label>
+                        <input type="text" name="{{ form.preferred_country.html_name }}" id="{{ form.preferred_country.id_for_label }}" class="form-control" placeholder="{% trans 'Any country' %}" value="{{ form.preferred_country.value|default_if_none:'' }}">
+                        {% for error in form.preferred_country.errors %}<span class="form-error">{{ error }}</span>{% endfor %}
+                    </div>
+                    <div class="form-group">
+                        <label for="{{ form.preferred_city.id_for_label }}">{{ form.preferred_city.label }}</label>
+                        <input type="text" name="{{ form.preferred_city.html_name }}" id="{{ form.preferred_city.id_for_label }}" class="form-control" placeholder="{% trans 'Any city' %}" value="{{ form.preferred_city.value|default_if_none:'' }}">
+                        {% for error in form.preferred_city.errors %}<span class="form-error">{{ error }}</span>{% endfor %}
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="{{ form.preferred_education_level.id_for_label }}">{{ form.preferred_education_level.label }}</label>
+                    <input type="text" name="{{ form.preferred_education_level.html_name }}" id="{{ form.preferred_education_level.id_for_label }}" class="form-control" placeholder="{% trans 'Any level' %}" value="{{ form.preferred_education_level.value|default_if_none:'' }}">
+                    {% for error in form.preferred_education_level.errors %}<span class="form-error">{{ error }}</span>{% endfor %}
+                </div>
+
+                <div class="form-group">
+                    <label for="{{ form.important_values.id_for_label }}">{{ form.important_values.label }}</label>
+                    <textarea name="{{ form.important_values.html_name }}" id="{{ form.important_values.id_for_label }}" class="form-control" rows="3" placeholder="{% trans 'e.g. Family-oriented, Honest, Religious...' %}">{{ form.important_values.value|default_if_none:'' }}</textarea>
+                    {% for error in form.important_values.errors %}<span class="form-error">{{ error }}</span>{% endfor %}
+                </div>
+            </div>
+
+            <!-- Privacy Settings -->
+            <div class="card card-flat" style="padding:28px;margin-bottom:20px;">
+                <h3 style="margin-bottom:20px;">{% trans "Privacy settings" %}</h3>
+
+                <div class="form-check">
+                    <input type="checkbox" name="{{ form.show_photo.html_name }}" id="{{ form.show_photo.id_for_label }}" class="form-check-input" {% if form.show_photo.value %}checked{% endif %}>
+                    <label for="{{ form.show_photo.id_for_label }}" class="form-check-label">{{ form.show_photo.label }}</label>
+                </div>
+                <div class="form-check">
+                    <input type="checkbox" name="{{ form.show_city.html_name }}" id="{{ form.show_city.id_for_label }}" class="form-check-input" {% if form.show_city.value %}checked{% endif %}>
+                    <label for="{{ form.show_city.id_for_label }}" class="form-check-label">{{ form.show_city.label }}</label>
+                </div>
+                <div class="form-check">
+                    <input type="checkbox" name="{{ form.show_profession.html_name }}" id="{{ form.show_profession.id_for_label }}" class="form-check-input" {% if form.show_profession.value %}checked{% endif %}>
+                    <label for="{{ form.show_profession.id_for_label }}" class="form-check-label">{{ form.show_profession.label }}</label>
+                </div>
+                <div class="form-check">
+                    <input type="checkbox" name="{{ form.private_mode.html_name }}" id="{{ form.private_mode.id_for_label }}" class="form-check-input" {% if form.private_mode.value %}checked{% endif %}>
+                    <label for="{{ form.private_mode.id_for_label }}" class="form-check-label">{{ form.private_mode.label }}</label>
+                </div>
+            </div>
+
+            <div style="display:flex;gap:12px;justify-content:center;">
+                <button type="submit" class="btn btn-primary">{% trans "Save profile" %}</button>
+                <a href="{% url 'profiles:detail' %}" class="btn btn-secondary">{% trans "Cancel" %}</a>
+            </div>
+        </form>
+
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,141 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "My Profile" %} — AmanMatch{% endblock %}
+
+{% block content %}
+<div class="section">
+    <div class="container" style="max-width:720px;">
+
+        <div class="dash-welcome" style="margin-bottom:32px;">
+            <h1>{% trans "My Profile" %}</h1>
+            <p>{% trans "This is how your profile appears. Only information you choose to share will be visible to others." %}</p>
+        </div>
+
+        <!-- Profile Overview Card -->
+        <div class="card card-flat" style="padding:32px;">
+            <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:24px;">
+                <div>
+                    <h2 style="margin-bottom:4px;">{{ user.first_name }} {{ user.last_name }}</h2>
+                    <p style="margin:0;">
+                        {% if age %}{{ age }} {% trans "years old" %}{% endif %}
+                        {% if account %} · {{ account.get_gender_display }}{% endif %}
+                        {% if account %} · {{ account.country }}{% endif %}
+                    </p>
+                </div>
+                {% if profile.private_mode %}
+                <span class="badge badge-warning">{% trans "Private mode" %}</span>
+                {% endif %}
+            </div>
+
+            {% if profile.show_city and account.city %}
+            <div class="profile-field">
+                <span class="profile-field-label">{% trans "City" %}</span>
+                <span>{{ account.city }}</span>
+            </div>
+            {% endif %}
+
+            {% if profile.marital_status %}
+            <div class="profile-field">
+                <span class="profile-field-label">{% trans "Marital status" %}</span>
+                <span>{{ profile.get_marital_status_display }}</span>
+            </div>
+            {% endif %}
+
+            {% if profile.education_level %}
+            <div class="profile-field">
+                <span class="profile-field-label">{% trans "Education" %}</span>
+                <span>{{ profile.education_level }}</span>
+            </div>
+            {% endif %}
+
+            {% if profile.show_profession and profile.profession %}
+            <div class="profile-field">
+                <span class="profile-field-label">{% trans "Profession" %}</span>
+                <span>{{ profile.profession }}</span>
+            </div>
+            {% endif %}
+
+            {% if profile.serious_intention %}
+            <div class="profile-field">
+                <span class="profile-field-label">{% trans "Serious intention" %}</span>
+                <span>{{ profile.get_serious_intention_display }}</span>
+            </div>
+            {% endif %}
+
+            {% if profile.short_bio %}
+            <div class="profile-field">
+                <span class="profile-field-label">{% trans "About me" %}</span>
+                <span>{{ profile.short_bio }}</span>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Partner Preferences -->
+        {% if profile.preferred_age_min or profile.preferred_age_max or profile.preferred_country or profile.preferred_city or profile.preferred_education_level or profile.important_values %}
+        <div class="card card-flat" style="padding:32px;margin-top:20px;">
+            <h3 style="margin-bottom:16px;">{% trans "Partner preferences" %}</h3>
+
+            {% if profile.preferred_age_min or profile.preferred_age_max %}
+            <div class="profile-field">
+                <span class="profile-field-label">{% trans "Age range" %}</span>
+                <span>
+                    {% if profile.preferred_age_min and profile.preferred_age_max %}
+                        {{ profile.preferred_age_min }} – {{ profile.preferred_age_max }}
+                    {% elif profile.preferred_age_min %}
+                        {% trans "From" %} {{ profile.preferred_age_min }}
+                    {% elif profile.preferred_age_max %}
+                        {% trans "Up to" %} {{ profile.preferred_age_max }}
+                    {% endif %}
+                </span>
+            </div>
+            {% endif %}
+
+            {% if profile.preferred_country %}
+            <div class="profile-field">
+                <span class="profile-field-label">{% trans "Country" %}</span>
+                <span>{{ profile.preferred_country }}</span>
+            </div>
+            {% endif %}
+
+            {% if profile.preferred_city %}
+            <div class="profile-field">
+                <span class="profile-field-label">{% trans "City" %}</span>
+                <span>{{ profile.preferred_city }}</span>
+            </div>
+            {% endif %}
+
+            {% if profile.preferred_education_level %}
+            <div class="profile-field">
+                <span class="profile-field-label">{% trans "Education" %}</span>
+                <span>{{ profile.preferred_education_level }}</span>
+            </div>
+            {% endif %}
+
+            {% if profile.important_values %}
+            <div class="profile-field">
+                <span class="profile-field-label">{% trans "Important values" %}</span>
+                <span>{{ profile.important_values }}</span>
+            </div>
+            {% endif %}
+        </div>
+        {% endif %}
+
+        <!-- Completion -->
+        <div class="card card-flat" style="padding:24px;margin-top:20px;text-align:center;">
+            <div class="progress-bar-wrapper" style="margin-bottom:12px;">
+                <div class="progress-bar">
+                    <div class="progress-bar-fill" style="width:{{ profile.completion_percentage }}%;"></div>
+                </div>
+                <span class="progress-label">{{ profile.completion_percentage }}%</span>
+            </div>
+            <p>{% trans "Profile completion" %}</p>
+        </div>
+
+        <div style="text-align:center;margin-top:24px;">
+            <a href="{% url 'profiles:edit' %}" class="btn btn-primary">{% trans "Edit profile" %}</a>
+        </div>
+
+    </div>
+</div>
+{% endblock %}
