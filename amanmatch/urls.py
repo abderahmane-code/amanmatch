@@ -12,6 +12,7 @@ urlpatterns = [
     path("accounts/", include("accounts.urls")),
     path("verification/", include("verification.urls")),
     path("profiles/", include("profiles.urls")),
+    path("matchmaking/", include("matchmaking.urls")),
 ]
 
 if settings.DEBUG:

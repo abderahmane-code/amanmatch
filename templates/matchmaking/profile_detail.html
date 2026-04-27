@@ -1,0 +1,120 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{{ target_user.first_name|default:"Profile" }} — AmanMatch{% endblock %}
+
+{% block content %}
+<div class="section">
+    <div class="container" style="max-width:800px;">
+
+        <a href="{% url 'matchmaking:search' %}" class="back-link">&larr; {% trans "Back to search" %}</a>
+
+        <!-- Profile Header -->
+        <div class="pub-profile-header">
+            <div class="profile-avatar profile-avatar-lg">{{ target_user.first_name|first|default:"?" }}</div>
+            <div class="pub-profile-header-info">
+                <h1>{{ target_user.first_name|default:"User" }}</h1>
+                <p class="pub-profile-meta">
+                    {% if age %}{{ age }} {% trans "years" %}{% endif %}
+                    {% if account.get_gender_display %} · {{ account.get_gender_display }}{% endif %}
+                    · {{ account.country }}
+                </p>
+                <div class="pub-profile-badges">
+                    {% if account.is_identity_verified %}
+                    <span class="badge badge-verified">&#10003; {% trans "Verified" %}</span>
+                    {% else %}
+                    <span class="badge badge-not-verified">{% trans "Not verified" %}</span>
+                    {% endif %}
+                    {% if profile.private_mode %}
+                    <span class="badge badge-warning">&#128274; {% trans "Private mode" %}</span>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Profile Details Card -->
+        <div class="card card-flat" style="padding:32px;margin-top:24px;">
+            <h3 style="margin-bottom:20px;">{% trans "Profile details" %}</h3>
+
+            {% if not profile.private_mode or is_own_profile %}
+                {% if profile.show_city and account.city %}
+                <div class="profile-field">
+                    <span class="profile-field-label">{% trans "City" %}</span>
+                    <span>{{ account.city }}</span>
+                </div>
+                {% endif %}
+            {% endif %}
+
+            {% if profile.marital_status %}
+            <div class="profile-field">
+                <span class="profile-field-label">{% trans "Marital status" %}</span>
+                <span>{{ profile.get_marital_status_display }}</span>
+            </div>
+            {% endif %}
+
+            {% if profile.education_level %}
+            <div class="profile-field">
+                <span class="profile-field-label">{% trans "Education" %}</span>
+                <span>{{ profile.education_level }}</span>
+            </div>
+            {% endif %}
+
+            {% if not profile.private_mode or is_own_profile %}
+                {% if profile.show_profession and profile.profession %}
+                <div class="profile-field">
+                    <span class="profile-field-label">{% trans "Profession" %}</span>
+                    <span>{{ profile.profession }}</span>
+                </div>
+                {% endif %}
+            {% endif %}
+
+            {% if profile.serious_intention %}
+            <div class="profile-field">
+                <span class="profile-field-label">{% trans "Serious intention" %}</span>
+                <span>{{ profile.get_serious_intention_display }}</span>
+            </div>
+            {% endif %}
+
+            {% if not profile.private_mode or is_own_profile %}
+                {% if profile.short_bio %}
+                <div class="profile-field">
+                    <span class="profile-field-label">{% trans "About" %}</span>
+                    <span>{{ profile.short_bio }}</span>
+                </div>
+                {% endif %}
+
+                {% if profile.important_values %}
+                <div class="profile-field">
+                    <span class="profile-field-label">{% trans "Important values" %}</span>
+                    <span>{{ profile.important_values }}</span>
+                </div>
+                {% endif %}
+            {% else %}
+                <div class="private-notice">
+                    <span>&#128274;</span>
+                    <p>{% trans "Private profile — details visible after mutual interest." %}</p>
+                </div>
+            {% endif %}
+        </div>
+
+        <!-- Interest Button -->
+        {% if not is_own_profile %}
+        <div class="card card-flat" style="padding:32px;margin-top:24px;text-align:center;">
+            {% if viewer_verified %}
+                <a href="#" class="btn btn-primary">{% trans "Send interest" %}</a>
+                <p style="margin-top:12px;font-size:.85rem;">{% trans "Express your interest. The other person will be notified only if mutual." %}</p>
+            {% else %}
+                <p class="interest-blocked">{% trans "Verify your identity to send interest." %}</p>
+                <a href="{% url 'verification:start' %}" class="btn btn-secondary" style="margin-top:12px;">{% trans "Start verification" %}</a>
+            {% endif %}
+        </div>
+        {% endif %}
+
+        <!-- Trust Footer -->
+        <div class="trust-footer-card">
+            <p>{% trans "AmanMatch never displays email, phone number, identity documents, or selfie images on profile pages." %}</p>
+        </div>
+
+    </div>
+</div>
+{% endblock %}

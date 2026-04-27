@@ -16,7 +16,7 @@
                     {% if verification_status == "pending" %}
                     <a href="{% url 'verification:status' %}" class="btn btn-primary">{% trans "View verification status" %}</a>
                     {% elif verification_status == "approved" %}
-                    <a href="#" class="btn btn-primary">{% trans "Find matches" %}</a>
+                    <a href="{% url 'matchmaking:search' %}" class="btn btn-primary">{% trans "Find matches" %}</a>
                     {% elif verification_status == "rejected" %}
                     <a href="{% url 'verification:start' %}" class="btn btn-primary">{% trans "Resubmit verification" %}</a>
                     {% else %}
@@ -49,7 +49,7 @@
                 </div>
                 {% if user.account_profile.is_identity_verified %}
                 <p>{% trans "Your identity has been verified. You can now access all matchmaking features." %}</p>
-                <a href="#" class="btn btn-sm btn-primary">{% trans "Find matches" %}</a>
+                <a href="{% url 'matchmaking:search' %}" class="btn btn-sm btn-primary">{% trans "Find matches" %}</a>
                 {% elif verification_status == "pending" %}
                 <p>{% trans "Your verification is being reviewed by our team. This usually takes 24-48 hours." %}</p>
                 <a href="{% url 'verification:status' %}" class="btn btn-sm btn-secondary">{% trans "View verification status" %}</a>
@@ -118,7 +118,7 @@
                     <p>{% trans "Verify your identity to build trust and unlock features" %}</p>
                 </div>
             </a>
-            <a href="#" class="action-card action-card-lg">
+            <a href="{% url 'matchmaking:search' %}" class="action-card action-card-lg">
                 <div class="action-icon-lg">&#10084;</div>
                 <div>
                     <h3>{% trans "Find Matches" %}</h3>
@@ -180,7 +180,7 @@
                 <div>
                     <h4>{% trans "Start exploring verified profiles" %}</h4>
                     <p>{% trans "Once verified, browse profiles of people who share your values and intentions." %}</p>
-                    <a href="#" class="btn btn-sm btn-secondary">{% trans "Explore" %}</a>
+                    <a href="{% url 'matchmaking:search' %}" class="btn btn-sm btn-secondary">{% trans "Explore" %}</a>
                 </div>
             </div>
         </div>

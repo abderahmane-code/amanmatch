@@ -1,0 +1,171 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Find Matches" %} — AmanMatch{% endblock %}
+
+{% block content %}
+<div class="section">
+    <div class="container container-wide">
+
+        <!-- Page Header -->
+        <div class="search-header">
+            <h1>{% trans "Find your" %} <span class="text-gradient">{% trans "match" %}</span></h1>
+            <p class="subtitle">{% trans "Browse serious, verified profiles that match your preferences. Only identity-verified users can send interest requests." %}</p>
+        </div>
+
+        <div class="search-layout">
+            <!-- Filter Panel -->
+            <aside class="search-filters">
+                <form method="get" action="{% url 'matchmaking:search' %}">
+                    <div class="filter-panel">
+                        <div class="filter-panel-header">
+                            <h3>&#128269; {% trans "Search filters" %}</h3>
+                        </div>
+
+                        <div class="filter-group">
+                            <label for="id_gender">{% trans "Gender" %}</label>
+                            <select name="gender" id="id_gender" class="filter-input">
+                                <option value="">{% trans "All" %}</option>
+                                {% for value, label in gender_choices %}
+                                <option value="{{ value }}" {% if filters.gender == value %}selected{% endif %}>{{ label }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="filter-group">
+                            <label for="id_country">{% trans "Country" %}</label>
+                            <input type="text" name="country" id="id_country" class="filter-input" placeholder="{% trans 'e.g. Morocco' %}" value="{{ filters.country }}">
+                        </div>
+
+                        <div class="filter-group">
+                            <label for="id_city">{% trans "City" %}</label>
+                            <input type="text" name="city" id="id_city" class="filter-input" placeholder="{% trans 'e.g. Casablanca' %}" value="{{ filters.city }}">
+                        </div>
+
+                        <div class="filter-row">
+                            <div class="filter-group filter-half">
+                                <label for="id_age_min">{% trans "Age min" %}</label>
+                                <input type="number" name="age_min" id="id_age_min" class="filter-input" min="18" max="99" placeholder="18" value="{{ filters.age_min }}">
+                            </div>
+                            <div class="filter-group filter-half">
+                                <label for="id_age_max">{% trans "Age max" %}</label>
+                                <input type="number" name="age_max" id="id_age_max" class="filter-input" min="18" max="99" placeholder="99" value="{{ filters.age_max }}">
+                            </div>
+                        </div>
+
+                        <div class="filter-group">
+                            <label for="id_marital_status">{% trans "Marital status" %}</label>
+                            <select name="marital_status" id="id_marital_status" class="filter-input">
+                                <option value="">{% trans "All" %}</option>
+                                {% for value, label in marital_choices %}
+                                <option value="{{ value }}" {% if filters.marital_status == value %}selected{% endif %}>{{ label }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="filter-group">
+                            <label for="id_education_level">{% trans "Education level" %}</label>
+                            <input type="text" name="education_level" id="id_education_level" class="filter-input" placeholder="{% trans 'e.g. Masters' %}" value="{{ filters.education_level }}">
+                        </div>
+
+                        <div class="filter-group">
+                            <label for="id_serious_intention">{% trans "Serious intention" %}</label>
+                            <select name="serious_intention" id="id_serious_intention" class="filter-input">
+                                <option value="">{% trans "All" %}</option>
+                                {% for value, label in intention_choices %}
+                                <option value="{{ value }}" {% if filters.serious_intention == value %}selected{% endif %}>{{ label }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary btn-filter">{% trans "Search" %}</button>
+                        <a href="{% url 'matchmaking:search' %}" class="btn btn-secondary btn-filter">{% trans "Reset" %}</a>
+                    </div>
+                </form>
+            </aside>
+
+            <!-- Results Area -->
+            <div class="search-results">
+                <div class="results-header">
+                    <span class="results-count">
+                        {{ result_count }} {% if result_count == 1 %}{% trans "profile found" %}{% else %}{% trans "profiles found" %}{% endif %}
+                    </span>
+                </div>
+
+                {% if results %}
+                <div class="results-grid">
+                    {% for item in results %}
+                    <div class="profile-card">
+                        <div class="profile-card-header">
+                            <div class="profile-avatar">{{ item.user.first_name|first|default:"?" }}</div>
+                            <div class="profile-card-badges">
+                                {% if item.account.is_identity_verified %}
+                                <span class="badge badge-verified">&#10003; {% trans "Verified" %}</span>
+                                {% endif %}
+                                {% if item.profile.private_mode %}
+                                <span class="badge badge-warning">&#128274; {% trans "Private" %}</span>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="profile-card-body">
+                            <h3 class="profile-card-name">{{ item.user.first_name|default:"User" }}</h3>
+                            <p class="profile-card-meta">
+                                {% if item.age %}{{ item.age }} {% trans "years" %}{% endif %}
+                                {% if item.account.get_gender_display %} · {{ item.account.get_gender_display }}{% endif %}
+                                · {{ item.account.country }}
+                            </p>
+
+                            {% if item.profile.private_mode %}
+                            <p class="profile-card-private">{% trans "Private profile — details visible after mutual interest." %}</p>
+                            {% else %}
+                                {% if item.profile.show_city and item.account.city %}
+                                <div class="profile-card-detail">
+                                    <span class="detail-label">{% trans "City" %}</span>
+                                    <span>{{ item.account.city }}</span>
+                                </div>
+                                {% endif %}
+
+                                {% if item.profile.show_profession and item.profile.profession %}
+                                <div class="profile-card-detail">
+                                    <span class="detail-label">{% trans "Profession" %}</span>
+                                    <span>{{ item.profile.profession }}</span>
+                                </div>
+                                {% endif %}
+                            {% endif %}
+
+                            {% if item.profile.marital_status %}
+                            <div class="profile-card-detail">
+                                <span class="detail-label">{% trans "Status" %}</span>
+                                <span>{{ item.profile.get_marital_status_display }}</span>
+                            </div>
+                            {% endif %}
+
+                            {% if item.profile.serious_intention %}
+                            <div class="profile-card-detail">
+                                <span class="detail-label">{% trans "Intention" %}</span>
+                                <span>{{ item.profile.get_serious_intention_display }}</span>
+                            </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="profile-card-footer">
+                            <a href="{% url 'matchmaking:public_profile' item.user.pk %}" class="btn btn-secondary btn-sm">{% trans "View profile" %}</a>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="search-empty">
+                    <div class="empty-icon">&#128269;</div>
+                    <h3>{% trans "No profiles found" %}</h3>
+                    <p>{% trans "Try adjusting your search filters to discover more profiles." %}</p>
+                    <a href="{% url 'matchmaking:search' %}" class="btn btn-secondary">{% trans "Reset filters" %}</a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock %}
