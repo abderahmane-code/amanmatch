@@ -5,7 +5,7 @@
 
 {% block content %}
 <div class="section">
-    <div class="container" style="max-width:800px;">
+    <div class="container container-md">
 
         <a href="{% url 'matchmaking:search' %}" class="back-link">&larr; {% trans "Back to search" %}</a>
 
@@ -36,7 +36,7 @@
         <div class="card card-flat" style="padding:32px;margin-top:24px;">
             <h3 style="margin-bottom:20px;">{% trans "Profile details" %}</h3>
 
-            {% if not profile.private_mode or is_own_profile %}
+            {% if not profile.private_mode or is_own_profile or is_matched %}
                 {% if profile.show_city and account.city %}
                 <div class="profile-field">
                     <span class="profile-field-label">{% trans "City" %}</span>
@@ -59,7 +59,7 @@
             </div>
             {% endif %}
 
-            {% if not profile.private_mode or is_own_profile %}
+            {% if not profile.private_mode or is_own_profile or is_matched %}
                 {% if profile.show_profession and profile.profession %}
                 <div class="profile-field">
                     <span class="profile-field-label">{% trans "Profession" %}</span>
@@ -75,7 +75,7 @@
             </div>
             {% endif %}
 
-            {% if not profile.private_mode or is_own_profile %}
+            {% if not profile.private_mode or is_own_profile or is_matched %}
                 {% if profile.short_bio %}
                 <div class="profile-field">
                     <span class="profile-field-label">{% trans "About" %}</span>
@@ -97,11 +97,32 @@
             {% endif %}
         </div>
 
-        <!-- Interest Button -->
+        <!-- Interest / Match Actions -->
         {% if not is_own_profile %}
         <div class="card card-flat" style="padding:32px;margin-top:24px;text-align:center;">
-            {% if viewer_verified %}
-                <a href="#" class="btn btn-primary">{% trans "Send interest" %}</a>
+            {% if interest_state == "matched" %}
+                <span class="badge badge-matched">&#10003; {% trans "Matched" %}</span>
+                <p style="margin-top:12px;font-size:.85rem;">{% trans "Messaging will be available in the next step." %}</p>
+            {% elif interest_state == "sent_pending" %}
+                <span class="badge badge-pending">&#9203; {% trans "Interest pending" %}</span>
+                <p style="margin-top:12px;font-size:.85rem;">{% trans "Waiting for this person to respond to your interest." %}</p>
+            {% elif interest_state == "received_pending" %}
+                <p style="margin-bottom:16px;font-size:.95rem;">{% trans "This person has expressed interest in you." %}</p>
+                <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+                    <form method="post" action="{% url 'matchmaking:accept_interest' interest_id=interest_obj.pk %}">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-primary">{% trans "Accept interest" %}</button>
+                    </form>
+                    <form method="post" action="{% url 'matchmaking:reject_interest' interest_id=interest_obj.pk %}">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-secondary">{% trans "Reject interest" %}</button>
+                    </form>
+                </div>
+            {% elif viewer_verified %}
+                <form method="post" action="{% url 'matchmaking:send_interest' user_id=target_user.pk %}">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-primary">{% trans "Send interest" %}</button>
+                </form>
                 <p style="margin-top:12px;font-size:.85rem;">{% trans "Express your interest. The other person will be notified only if mutual." %}</p>
             {% else %}
                 <p class="interest-blocked">{% trans "Verify your identity to send interest." %}</p>

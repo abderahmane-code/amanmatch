@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Matches" %} — AmanMatch{% endblock %}
+
+{% block content %}
+<div class="section">
+    <div class="container" style="max-width:1100px;">
+
+        <div class="interest-page-header">
+            <h1>{% trans "Your Matches" %}</h1>
+            <p class="text-secondary">{% trans "Users who have mutually accepted interest with you." %}</p>
+            <div class="interest-nav-tabs">
+                <a href="{% url 'matchmaking:received_interests' %}" class="tab">{% trans "Received" %}</a>
+                <a href="{% url 'matchmaking:sent_interests' %}" class="tab">{% trans "Sent" %}</a>
+                <a href="{% url 'matchmaking:matches' %}" class="tab active">{% trans "Matches" %}</a>
+                <a href="{% url 'matchmaking:search' %}" class="tab">{% trans "Search" %}</a>
+            </div>
+        </div>
+
+        {% if items %}
+        <div class="interest-list">
+            {% for item in items %}
+            <div class="card card-flat interest-card">
+                <div class="interest-card-body">
+                    <div class="profile-avatar profile-avatar-matched">{{ item.user.first_name|first|default:"?" }}</div>
+                    <div class="interest-card-info">
+                        <h3>{{ item.user.first_name|default:"User" }}</h3>
+                        <p class="text-secondary">
+                            {% if item.age %}{{ item.age }} {% trans "years" %} · {% endif %}
+                            {% if item.account %}{{ item.account.country }}{% endif %}
+                        </p>
+                        <p class="interest-date text-secondary">{% trans "Matched" %} {{ item.match.created_at|date:"M d, Y" }}</p>
+                    </div>
+                    <div class="interest-card-actions">
+                        <span class="badge badge-matched">&#10003; {% trans "Matched" %}</span>
+                        <span class="badge badge-coming-soon" style="margin-top:6px;">{% trans "Messaging coming soon" %}</span>
+                        <a href="{% url 'matchmaking:public_profile' user_id=item.user.pk %}" class="btn btn-secondary btn-sm" style="margin-top:8px;">{% trans "View profile" %}</a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="search-empty">
+            <span style="font-size:3rem;">&#128140;</span>
+            <h3>{% trans "No matches yet" %}</h3>
+            <p>{% trans "When both you and another user accept interest, a match is created." %}</p>
+            <a href="{% url 'matchmaking:search' %}" class="btn btn-primary" style="margin-top:16px;">{% trans "Browse profiles" %}</a>
+        </div>
+        {% endif %}
+
+        <div class="trust-footer-card" style="margin-top:32px;">
+            <p>{% trans "Mutual interest protects both sides before messaging." %}</p>
+        </div>
+
+    </div>
+</div>
+{% endblock %}
