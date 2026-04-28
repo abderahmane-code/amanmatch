@@ -5,6 +5,7 @@ from django.test import TestCase
 from django.urls import reverse
 
 from accounts.models import AccountProfile
+from matchmaking.models import Interest, Match
 from profiles.models import MatchmakingProfile
 
 
@@ -243,3 +244,241 @@ class InterestButtonTests(TestCase, MatchmakingTestMixin):
             reverse("matchmaking:public_profile", args=[self.target.pk])
         )
         self.assertContains(resp, "Send interest")
+
+
+# =====================================================================
+# Mutual Interest System Tests
+# =====================================================================
+
+
+class SendInterestTests(TestCase, MatchmakingTestMixin):
+    def setUp(self):
+        self.verified = self.create_user_with_profiles(
+            "verified_sender", is_verified=True
+        )
+        self.unverified = self.create_user_with_profiles(
+            "unverified_sender", is_verified=False
+        )
+        self.receiver = self.create_user_with_profiles("receiver")
+
+    def test_unverified_cannot_send_interest(self):
+        self.client.login(username="unverified_sender", password="TestPass123!")
+        resp = self.client.post(
+            reverse("matchmaking:send_interest", args=[self.receiver.pk])
+        )
+        self.assertEqual(resp.status_code, 302)
+        self.assertFalse(Interest.objects.exists())
+
+    def test_verified_can_send_interest(self):
+        self.client.login(username="verified_sender", password="TestPass123!")
+        resp = self.client.post(
+            reverse("matchmaking:send_interest", args=[self.receiver.pk])
+        )
+        self.assertEqual(resp.status_code, 302)
+        self.assertTrue(
+            Interest.objects.filter(
+                sender=self.verified, receiver=self.receiver, status="pending"
+            ).exists()
+        )
+
+    def test_cannot_send_interest_to_self(self):
+        self.client.login(username="verified_sender", password="TestPass123!")
+        resp = self.client.post(
+            reverse("matchmaking:send_interest", args=[self.verified.pk])
+        )
+        self.assertEqual(resp.status_code, 302)
+        self.assertFalse(Interest.objects.exists())
+
+    def test_duplicate_pending_blocked(self):
+        self.client.login(username="verified_sender", password="TestPass123!")
+        Interest.objects.create(
+            sender=self.verified, receiver=self.receiver, status="pending"
+        )
+        self.client.post(
+            reverse("matchmaking:send_interest", args=[self.receiver.pk])
+        )
+        self.assertEqual(
+            Interest.objects.filter(
+                sender=self.verified, receiver=self.receiver
+            ).count(),
+            1,
+        )
+
+    def test_anonymous_cannot_send(self):
+        resp = self.client.post(
+            reverse("matchmaking:send_interest", args=[self.receiver.pk])
+        )
+        self.assertEqual(resp.status_code, 302)
+        self.assertIn("/accounts/login/", resp.url)
+
+
+class AcceptRejectInterestTests(TestCase, MatchmakingTestMixin):
+    def setUp(self):
+        self.sender = self.create_user_with_profiles("sender", is_verified=True)
+        self.receiver = self.create_user_with_profiles("receiver", is_verified=True)
+        self.interest = Interest.objects.create(
+            sender=self.sender, receiver=self.receiver
+        )
+
+    def test_receiver_can_accept(self):
+        self.client.login(username="receiver", password="TestPass123!")
+        resp = self.client.post(
+            reverse("matchmaking:accept_interest", args=[self.interest.pk])
+        )
+        self.interest.refresh_from_db()
+        self.assertEqual(self.interest.status, "accepted")
+        self.assertTrue(
+            Match.objects.filter(user1=self.sender, user2=self.receiver).exists()
+        )
+
+    def test_accepting_creates_match(self):
+        self.client.login(username="receiver", password="TestPass123!")
+        self.client.post(
+            reverse("matchmaking:accept_interest", args=[self.interest.pk])
+        )
+        self.assertEqual(Match.objects.count(), 1)
+
+    def test_duplicate_match_not_created(self):
+        Match.objects.create(user1=self.sender, user2=self.receiver)
+        self.client.login(username="receiver", password="TestPass123!")
+        self.client.post(
+            reverse("matchmaking:accept_interest", args=[self.interest.pk])
+        )
+        self.assertEqual(Match.objects.count(), 1)
+
+    def test_receiver_can_reject(self):
+        self.client.login(username="receiver", password="TestPass123!")
+        self.client.post(
+            reverse("matchmaking:reject_interest", args=[self.interest.pk])
+        )
+        self.interest.refresh_from_db()
+        self.assertEqual(self.interest.status, "rejected")
+
+    def test_sender_cannot_accept_own_sent(self):
+        self.client.login(username="sender", password="TestPass123!")
+        resp = self.client.post(
+            reverse("matchmaking:accept_interest", args=[self.interest.pk])
+        )
+        self.assertEqual(resp.status_code, 403)
+        self.interest.refresh_from_db()
+        self.assertEqual(self.interest.status, "pending")
+
+    def test_sender_cannot_reject_own_sent(self):
+        self.client.login(username="sender", password="TestPass123!")
+        resp = self.client.post(
+            reverse("matchmaking:reject_interest", args=[self.interest.pk])
+        )
+        self.assertEqual(resp.status_code, 403)
+        self.interest.refresh_from_db()
+        self.assertEqual(self.interest.status, "pending")
+
+
+class InterestListAccessTests(TestCase, MatchmakingTestMixin):
+    def test_received_requires_login(self):
+        resp = self.client.get(reverse("matchmaking:received_interests"))
+        self.assertEqual(resp.status_code, 302)
+        self.assertIn("/accounts/login/", resp.url)
+
+    def test_sent_requires_login(self):
+        resp = self.client.get(reverse("matchmaking:sent_interests"))
+        self.assertEqual(resp.status_code, 302)
+        self.assertIn("/accounts/login/", resp.url)
+
+    def test_matches_requires_login(self):
+        resp = self.client.get(reverse("matchmaking:matches"))
+        self.assertEqual(resp.status_code, 302)
+        self.assertIn("/accounts/login/", resp.url)
+
+    def test_logged_in_can_access_received(self):
+        user = self.create_user_with_profiles("user1")
+        self.client.login(username="user1", password="TestPass123!")
+        resp = self.client.get(reverse("matchmaking:received_interests"))
+        self.assertEqual(resp.status_code, 200)
+
+    def test_logged_in_can_access_sent(self):
+        user = self.create_user_with_profiles("user1")
+        self.client.login(username="user1", password="TestPass123!")
+        resp = self.client.get(reverse("matchmaking:sent_interests"))
+        self.assertEqual(resp.status_code, 200)
+
+
+class ProfileDetailMatchedTests(TestCase, MatchmakingTestMixin):
+    def test_matched_shows_matched_badge(self):
+        sender = self.create_user_with_profiles("sender", is_verified=True)
+        receiver = self.create_user_with_profiles("receiver", is_verified=True)
+        Interest.objects.create(
+            sender=sender, receiver=receiver, status="accepted"
+        )
+        Match.objects.create(user1=sender, user2=receiver)
+        self.client.login(username="sender", password="TestPass123!")
+        resp = self.client.get(
+            reverse("matchmaking:public_profile", args=[receiver.pk])
+        )
+        self.assertContains(resp, "Matched")
+        self.assertContains(resp, "Messaging will be available in the next step.")
+
+    def test_private_mode_remains_before_match(self):
+        viewer = self.create_user_with_profiles("viewer", is_verified=True)
+        private_user = self.create_user_with_profiles(
+            "priv", private_mode=True, city="SecretCity",
+            profession="SecretJob", short_bio="Hidden bio",
+            important_values="Hidden values",
+        )
+        self.client.login(username="viewer", password="TestPass123!")
+        resp = self.client.get(
+            reverse("matchmaking:public_profile", args=[private_user.pk])
+        )
+        self.assertNotContains(resp, "SecretCity")
+        self.assertNotContains(resp, "SecretJob")
+        self.assertNotContains(resp, "Hidden bio")
+        self.assertNotContains(resp, "Hidden values")
+        self.assertContains(resp, "Private profile")
+
+    def test_private_mode_relaxed_after_match(self):
+        viewer = self.create_user_with_profiles("viewer", is_verified=True)
+        private_user = self.create_user_with_profiles(
+            "priv", private_mode=True, city="SecretCity",
+            profession="SecretJob", short_bio="Hidden bio",
+            important_values="Hidden values",
+        )
+        Match.objects.create(user1=viewer, user2=private_user)
+        self.client.login(username="viewer", password="TestPass123!")
+        resp = self.client.get(
+            reverse("matchmaking:public_profile", args=[private_user.pk])
+        )
+        self.assertContains(resp, "SecretCity")
+        self.assertContains(resp, "SecretJob")
+        self.assertContains(resp, "Hidden bio")
+        self.assertContains(resp, "Hidden values")
+
+
+class InterestPagePrivacyTests(TestCase, MatchmakingTestMixin):
+    def test_received_does_not_expose_email(self):
+        sender = self.create_user_with_profiles(
+            "sender", email="secret@mail.com", is_verified=True
+        )
+        receiver = self.create_user_with_profiles("receiver")
+        Interest.objects.create(sender=sender, receiver=receiver)
+        self.client.login(username="receiver", password="TestPass123!")
+        resp = self.client.get(reverse("matchmaking:received_interests"))
+        self.assertNotContains(resp, "secret@mail.com")
+
+    def test_sent_does_not_expose_email(self):
+        sender = self.create_user_with_profiles("sender", is_verified=True)
+        receiver = self.create_user_with_profiles(
+            "receiver", email="secret2@mail.com"
+        )
+        Interest.objects.create(sender=sender, receiver=receiver)
+        self.client.login(username="sender", password="TestPass123!")
+        resp = self.client.get(reverse("matchmaking:sent_interests"))
+        self.assertNotContains(resp, "secret2@mail.com")
+
+    def test_matches_does_not_expose_email(self):
+        u1 = self.create_user_with_profiles("user1", is_verified=True)
+        u2 = self.create_user_with_profiles(
+            "user2", email="hidden@mail.com", is_verified=True
+        )
+        Match.objects.create(user1=u1, user2=u2)
+        self.client.login(username="user1", password="TestPass123!")
+        resp = self.client.get(reverse("matchmaking:matches"))
+        self.assertNotContains(resp, "hidden@mail.com")
